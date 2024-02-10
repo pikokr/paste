@@ -1,5 +1,5 @@
 # Build stage
-FROM node:lts as build
+FROM --platform=$BUILDPLATFORM node:lts as build
 
 ARG BYTEBIN_URL="data/"
 ENV REACT_APP_BYTEBIN_URL="${BYTEBIN_URL}"
