@@ -53,7 +53,7 @@ export default function EditorControls({
           pathname: pasteId,
         });
         copy(window.location.href);
-        document.title = 'paste | ' + pasteId;
+        document.title = 'pastes | ' + pasteId;
       }
     });
   }, [actualContent, language, recentlySaved]);

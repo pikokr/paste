@@ -17,6 +17,8 @@ interface LoadResultFail {
 
 export type LoadResult = LoadResultSuccess | LoadResultFail;
 
+let devtoolsNotificationShown = false;
+
 export async function loadFromBytebin(id: string): Promise<LoadResult> {
   try {
     const resp = await fetch(bytebinUrl + id);
@@ -25,6 +27,32 @@ export async function loadFromBytebin(id: string): Promise<LoadResult> {
       const type = contentTypeToLanguage(
         resp.headers.get('content-type') as string
       );
+
+      let hasJSON = false;
+      (window as unknown as { text: unknown }).text = content;
+
+      if (type === 'json') {
+        try {
+          (window as unknown as { json: unknown }).json = JSON.parse(content);
+          hasJSON = true;
+        } catch {}
+      }
+
+      if (!devtoolsNotificationShown) {
+        console.log(
+          `%cYou can access this paste's content by %cwindow.text`,
+          'color: #4757ff;',
+          'color: #ffca38;'
+        );
+        if (hasJSON) {
+          console.log(
+            `%cThis paste is json, and you can access this by %cwindow.json`,
+            'color: #4757ff;',
+            'color: #ffca38;'
+          );
+        }
+        devtoolsNotificationShown = true;
+      }
 
       document.title = 'pastes | ' + id;
       return { ok: true, content, type };
